@@ -1,16 +1,17 @@
 package demo.nakedlambda.entity;
 
+import demo.nakedlambda.entity.Entity;
+
 import java.util.Date;
 
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
+@javax.persistence.Entity
 @Table(name="appointments")
-public final class Appointment {
+public final class Appointment implements Entity {
 
   @Id
   @GeneratedValue(
@@ -26,6 +27,10 @@ public final class Appointment {
   public Appointment(final Date date, final String description) {
     this.date = date;
     this.description = description;
+  }
+
+  public Long getId() {
+    return this.id;
   }
 
 }
