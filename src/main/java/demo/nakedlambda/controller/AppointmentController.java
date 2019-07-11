@@ -20,16 +20,16 @@ public final class AppointmentController {
   }
 
   @RequestMapping(path = "/appointments", method = RequestMethod.GET)
-  public String appoinments() {
-    LOGGER.info("appoinments");
-    return "get appoinments";
+  public String appointments() {
+    LOGGER.info("appointments");
+    return "get appointments";
   }
 
   @RequestMapping(path = "/appointments/create", method = RequestMethod.POST)
-  public String appoinmentsCreate(final Map<String, String> args) {
-    final String message = String.format("appoinmentsCreate[args==%s]", args);
+  public String appointmentsCreate(final Map<String, String> args) {
+    final String message = String.format("appointmentsCreate[args==%s]", args);
     LOGGER.info(message);
-    return "post appoinment";
+    return "post appointment";
   }
 
 }
