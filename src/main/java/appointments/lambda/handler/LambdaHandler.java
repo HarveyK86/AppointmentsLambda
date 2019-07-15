@@ -30,17 +30,10 @@ public final class LambdaHandler implements RequestStreamHandler {
     }
   }
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(
-    LambdaHandler.class);
-
   @Override
   public void handleRequest(final InputStream inputStream,
     final OutputStream outputStream, final Context context) throws IOException {
-    final String message= String.format("handleRequest[inputStream==%s, "
-      + "outputStream==%s, context==%s]", inputStream, outputStream, context);
-    LOGGER.info(message);
     HANDLER.proxyStream(inputStream, outputStream,context);
-    outputStream.close();
   }
 
 }
