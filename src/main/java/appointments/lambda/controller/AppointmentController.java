@@ -1,4 +1,4 @@
-package demo.nakedlambda.controller;
+package appointments.lambda.controller;
 
 import java.util.Map;
 

@@ -1,6 +1,6 @@
-package demo.nakedlambda.handler;
+package appointments.lambda.handler;
 
-import demo.nakedlambda.Application;
+import appointments.lambda.Application;
 
 import java.io.InputStream;
 import java.io.IOException;

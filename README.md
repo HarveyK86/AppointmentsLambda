@@ -1,2 +1,2 @@
-# NakedLambda
-Naked SpringBoot/JPA App
+# AppointmentsLambda
+Appointments App for AWS Lambda

@@ -9,11 +9,11 @@
     <version>2.1.6.RELEASE</version>
     <relativePath/>
   </parent>
-  <groupId>demo.nakedlambda</groupId>
-  <artifactId>NakedLambda</artifactId>
+  <groupId>appointments.lambda</groupId>
+  <artifactId>AppointmentsLambda</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>NakedLambda</name>
-  <description>Naked SpringBoot/JPA App</description>
+  <name>AppointmentsLambda</name>
+  <description>Appointments App for AWS Lambda</description>
 
   <properties>
     <java.version>1.8</java.version>
