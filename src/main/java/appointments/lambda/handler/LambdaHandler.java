@@ -33,7 +33,7 @@ public final class LambdaHandler implements RequestStreamHandler {
   @Override
   public void handleRequest(final InputStream inputStream,
     final OutputStream outputStream, final Context context) throws IOException {
-    HANDLER.proxyStream(inputStream, outputStream,context);
+    HANDLER.proxyStream(inputStream, outputStream, context);
   }
 
 }

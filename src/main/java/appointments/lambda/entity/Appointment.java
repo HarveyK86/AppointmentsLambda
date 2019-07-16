@@ -22,14 +22,30 @@ public final class Appointment {
     generator="appointments_id_seq"
   )
   private Long id;
-  private String description;
   private Date date;
+  private String description;
 
   protected Appointment() {}
 
   @ConstructorProperties({"date", "description"})
   public Appointment(final Date date, final String description) {
     this.date = date;
+    this.description = description;
+  }
+
+  public Date getDate() {
+    return this.date;
+  }
+
+  public void setDate(final Date date) {
+    this.date = date;
+  }
+
+  public String getDescription() {
+    return this.description;
+  }
+
+  public void setDescription(final String description) {
     this.description = description;
   }
 
