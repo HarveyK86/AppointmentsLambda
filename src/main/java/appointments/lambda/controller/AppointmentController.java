@@ -25,23 +25,51 @@ public final class AppointmentController {
 
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
+  private static final Logger LOGGER =
+    LoggerFactory.getLogger(AppointmentController.class);
+
   public AppointmentController() {
     super();
+    final String className = AppointmentController.class.getSimpleName();
+    final String message = String.format("%s instantiated", className);
+    LOGGER.info(message);
   }
 
-  @RequestMapping(method = RequestMethod.GET, path = "/appointments",
-    produces = "application/json")
+  @RequestMapping(
+    method = RequestMethod.GET,
+    path = "/appointments",
+    produces = "application/json"
+  )
   public List<Appointment> appointments() {
-    return this.repository.findAllByOrderByDateAsc();
+    final List<Appointment> appointments =
+      this.repository.findAllByOrderByDateAsc();
+    final String message =
+      String.format("appointments returns %s", appointments);
+    LOGGER.info(message);
+    return appointments;
   }
 
-  @RequestMapping(method = RequestMethod.POST, path = "/appointments/create",
-    produces = "application/json")
-  public Appointment appointmentsCreate(@RequestBody final String json)
-    throws IOException {
-    final Appointment appointment = OBJECT_MAPPER.readValue(json,
-      Appointment.class);
-    return this.repository.save(appointment);
+  @RequestMapping(
+    method = RequestMethod.POST,
+    path = "/appointments/create",
+    produces = "application/json"
+  )
+  public Appointment appointmentsCreate(
+    @RequestBody
+    final String json
+  ) throws IOException {
+    if (json == null || "".equals(json.trim())) {
+      final String message = String.format("Illegal argument; json cannot be "
+        + "null, empty or only whitespace characters. [json==%s]", json);
+      throw new IllegalArgumentException(message);
+    }
+    String message = String.format("appointmentsCreate[json==\"%s\"]", json);
+    LOGGER.info(message);
+    Appointment appointment = OBJECT_MAPPER.readValue(json, Appointment.class);
+    appointment = this.repository.save(appointment);
+    message = String.format("appointmentsCreate returns %s", appointment);
+    LOGGER.info(message);
+    return appointment;
   }
 
 }
