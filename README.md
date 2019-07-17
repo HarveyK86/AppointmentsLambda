@@ -33,7 +33,7 @@ Appointments App for AWS Lambda
   * `CREATE DATABASE appointments;`
   * `\c appointments`
   * `CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`
-  * `CREATE TABLE appointments(id DEFAULT uuid_generate)v4(), date TIMESTAMP NOT NULL, description VARCHAR(255) NOT NULL, PRIMARY KEY(id));`
+  * `CREATE TABLE appointments(id DEFAULT uuid_generate_v4(), date TIMESTAMP NOT NULL, description VARCHAR(255) NOT NULL, PRIMARY KEY(id));`
   * `\q`
   * `exit`
 
