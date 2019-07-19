@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,11 +45,17 @@ public final class AppointmentController {
     path = "/appointments",
     produces = "application/json"
   )
-  public List<Appointment> appointments() {
+  public List<Appointment> appointments(final HttpServletResponse response) {
+    if (response == null) {
+      throw new IllegalArgumentException("Illegal argument; response cannot be "
+        + "null.");
+    }
+    String message = String.format("appointments[response==%s]", response);
+    LOGGER.info(message);
     final List<Appointment> appointments =
       this.repository.findAllByOrderByDateAsc();
-    final String message =
-      String.format("appointments returns %s", appointments);
+    this.prepareResponse(response);
+    message = String.format("appointments returns %s", appointments);
     LOGGER.info(message);
     return appointments;
   }
@@ -59,17 +67,21 @@ public final class AppointmentController {
   )
   public Appointment appointmentsCreate(
     @RequestBody
-    final String json
+    final String json,
+    final HttpServletResponse response
   ) throws IOException {
-    if (json == null || "".equals(json.trim())) {
+    if (json == null || "".equals(json.trim()) || response == null) {
       final String message = String.format("Illegal argument; json cannot be "
-        + "null, empty or only whitespace characters. [json==%s]", json);
+        + "null, empty or only whitespace characters and response cannot be "
+        + "null. [json==%s, response==%s]", json, response);
       throw new IllegalArgumentException(message);
     }
-    String message = String.format("appointmentsCreate[json==\"%s\"]", json);
+    String message = String.format("appointmentsCreate[json==\"%s\", "
+      + "response==%s]", json, response);
     LOGGER.info(message);
     Appointment appointment = OBJECT_MAPPER.readValue(json, Appointment.class);
     appointment = this.repository.save(appointment);
+    this.prepareResponse(response);
     message = String.format("appointmentsCreate returns %s", appointment);
     LOGGER.info(message);
     return appointment;
@@ -82,16 +94,20 @@ public final class AppointmentController {
   )
   public Appointment appointmentsRead(
     @PathVariable
-    final UUID id
+    final UUID id,
+    final HttpServletResponse response
   ) {
-    if (id == null) {
-      throw new IllegalArgumentException("Illegal argument; id cannot be "
-        + "null.");
+    if (id == null || response == null) {
+      final String message = String.format("Illegal argument; id and response "
+        + "cannot be null. [id==%s, response==%s]", id, response);
+      throw new IllegalArgumentException(message);
     }
-    String message = String.format("appointmentsRead[id==%s]", id);
+    String message = String.format("appointmentsRead[id==%s, response==%s]", id,
+      response);
     LOGGER.info(message);
     final Optional<Appointment> result = this.repository.findById(id);
     final Appointment appointment = result.get();
+    this.prepareResponse(response);
     message = String.format("appointmentsRead returns %s", appointment);
     LOGGER.info(message);
     return appointment;
@@ -106,20 +122,23 @@ public final class AppointmentController {
     @PathVariable
     final UUID id,
     @RequestBody
-    final String json
+    final String json,
+    final HttpServletResponse response
   ) throws IOException {
-    if (id == null || json == null || "".equals(json.trim())) {
-      final String message = String.format("Illegal argument; id cannot be "
-        + "null and json cannot be null, empty or only whitespace characters. "
-        + "[id==%s, json==%s]", id, json);
+    if (id == null || json == null || "".equals(json.trim())
+      || response == null) {
+      final String message = String.format("Illegal argument; id and response "
+        + "cannot be null and json cannot be null, empty or only whitespace "
+        + "characters. [id==%s, json==%s, response==%s]", id, json, response);
       throw new IllegalArgumentException(message);
     }
-    String message = String.format("appointmentsUpdate[id==%s, json==\"%s\"]",
-      id, json);
+    String message = String.format("appointmentsUpdate[id==%s, json==\"%s\", "
+      + "response==%s]", id, json, response);
     LOGGER.info(message);
     Appointment appointment = OBJECT_MAPPER.readValue(json, Appointment.class);
     appointment.setId(id);
     appointment = this.repository.save(appointment);
+    this.prepareResponse(response);
     message = String.format("appointmentsUpdate returns %s", appointment);
     LOGGER.info(message);
     return appointment;
@@ -132,20 +151,35 @@ public final class AppointmentController {
   )
   public List<Appointment> appointmentsDelete(
     @PathVariable
-    final UUID id
+    final UUID id,
+    final HttpServletResponse response
   ) throws IOException {
-    if (id == null) {
-      throw new IllegalArgumentException("Illegal argumentl id cannot be "
-        + "null.");
+    if (id == null || response == null) {
+      final String message = String.format("Illegal argument; id and response "
+        + "cannot be null. [id==%s, response==%s]", id, response);
+      throw new IllegalArgumentException(message);
     }
-    String message = String.format("appointmentsDelete[id==%s]", id);
+    String message = String.format("appointmentsDelete[id==%s, response==%s]",
+      id, response);
     LOGGER.info(message);
     this.repository.deleteById(id);
     final List<Appointment> appointments =
       this.repository.findAllByOrderByDateAsc();
+    this.prepareResponse(response);
     message = String.format("appointmentsDelete returns %s", appointments);
     LOGGER.info(message);
     return appointments;
+  }
+
+  private void prepareResponse(final HttpServletResponse response) {
+    String environmentVariable, value;
+    for (final String header : new String[] { "X-Requested-With",
+      "Access-Control-Allow-Headers", "Access-Control-Allow-Origin",
+      "Access-Control-Allow-Methods" }) {
+      environmentVariable = header.replaceAll("-", "_");
+      value = System.getenv(environmentVariable);
+      response.addHeader(header, value);
+    }
   }
  
 }
